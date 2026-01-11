@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberTracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CyberTracker</h1>
+            <div id="dateDisplay" class="date-display"></div>
+        </header>
+
+        <div id="taskList" class="task-list">
+            <div class="task-column" id="robotColumn">
+                <h2 class="column-header">Robot</h2>
+                <div class="column-tasks" id="robotTasks"></div>
+            </div>
+            <div class="task-column" id="projectColumn">
+                <h2 class="column-header">Project</h2>
+                <div class="column-tasks" id="projectTasks"></div>
+            </div>
+            <div class="task-column" id="otherColumn">
+                <h2 class="column-header">Other</h2>
+                <div class="column-tasks" id="otherTasks"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="addTaskBtn" class="add-task-btn" title="Add New Task">+</button>
+            <button id="exportPdfBtn" class="export-pdf-btn" title="Create Daily Dragon">DD</button>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add New Task</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="taskName">Name(s):</label>
+                    <div class="name-select-wrapper">
+                        <select id="taskName" multiple size="5" required>
+                            <option value="Sarah">Sarah</option>
+                            <option value="Medha">Medha</option>
+                            <option value="Declan">Declan</option>
+                            <option value="Lizzie">Lizzie</option>
+                            <option value="Austin">Austin</option>
+                            <option value="Fiso">Fiso</option>
+                            <option value="Aaron">Aaron</option>
+                            <option value="Oona">Oona</option>
+                            <option value="Frank">Frank</option>
+                        </select>
+                    </div>
+                    <small>Hold Ctrl (Windows/Linux) or Cmd (Mac) to select multiple non-adjacent names</small>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Task:</label>
+                    <textarea id="taskDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskCategory">Category:</label>
+                    <select id="taskCategory" required>
+                        <option value="Robot">Robot</option>
+                        <option value="Project">Project</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskSubcategory">Subcategory (optional):</label>
+                    <div class="subcategory-input-group">
+                        <select id="taskSubcategory">
+                            <option value="">None</option>
+                        </select>
+                        <input type="text" id="newSubcategory" placeholder="Or create new...">
+                        <button type="button" id="createSubcategoryBtn" class="small-btn">Create</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taskDeadline">Deadline (optional):</label>
+                    <input type="date" id="taskDeadline">
+                </div>
+                <div id="formError" class="error-message" style="display: none;"></div>
+                <button type="submit" class="submit-btn" id="submitBtn">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <span class="close-edit">&times;</span>
+            <h2>Edit Task</h2>
+            <form id="editTaskForm">
+                <div class="form-group">
+                    <label for="editTaskName">Name(s):</label>
+                    <div class="name-select-wrapper">
+                        <select id="editTaskName" multiple size="5" required>
+                            <option value="Sarah">Sarah</option>
+                            <option value="Medha">Medha</option>
+                            <option value="Declan">Declan</option>
+                            <option value="Lizzie">Lizzie</option>
+                            <option value="Austin">Austin</option>
+                            <option value="Fiso">Fiso</option>
+                            <option value="Aaron">Aaron</option>
+                            <option value="Oona">Oona</option>
+                            <option value="Frank">Frank</option>
+                        </select>
+                    </div>
+                    <small>Hold Ctrl (Windows/Linux) or Cmd (Mac) to select multiple non-adjacent names</small>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskDescription">Task:</label>
+                    <textarea id="editTaskDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskCategory">Category:</label>
+                    <select id="editTaskCategory" required>
+                        <option value="Robot">Robot</option>
+                        <option value="Project">Project</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskSubcategory">Subcategory (optional):</label>
+                    <div class="subcategory-input-group">
+                        <select id="editTaskSubcategory">
+                            <option value="">None</option>
+                        </select>
+                        <input type="text" id="editNewSubcategory" placeholder="Or create new...">
+                        <button type="button" id="editCreateSubcategoryBtn" class="small-btn">Create</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskDeadline">Deadline (optional):</label>
+                    <input type="date" id="editTaskDeadline">
+                </div>
+                <div id="editFormError" class="error-message" style="display: none;"></div>
+                <button type="submit" class="submit-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-note">&times;</span>
+            <h2>Add Note</h2>
+            <form id="noteForm">
+                <div class="form-group">
+                    <label for="noteText">Note:</label>
+                    <textarea id="noteText" rows="4" required placeholder="Enter your note here..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Add Note</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+.
